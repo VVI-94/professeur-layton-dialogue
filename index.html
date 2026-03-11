@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Énigme du Professeur - Bastien</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family: 'Lora', serif;
+background-image:url("images/background.png");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+
+min-height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+#game{
+    width:600px;
+}
+
+/* wrapper pour speaker + portrait sur la même ligne */
+#speakerWrapper {
+    display: flex;
+    align-items: flex-end;  /* nom aligné avec le bas du portrait */
+    justify-content: flex-start;
+    margin-bottom: 10px;
+    gap: 20px;             /* espace horizontal entre nom et portrait */
+}
+
+/* nom du personnage */
+#speaker {
+    display: inline-block;
+    background: #3a2f24;
+    border: 4px solid #c8a66a;
+    padding: 6px 14px;
+    border-radius: 8px;
+    color: #c8a66a;
+    font-weight: bold;
+    font-size: 24px;
+    min-width: 180px; /* largeur minimale pour éviter de se rétrécir trop */
+    text-align: center;
+}
+
+/* portrait */
+#portrait {
+    display: block;
+    height: 0;           /* sera défini par JS */
+    max-width: 120px;
+    object-fit: contain;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+/* boîte de dialogue */
+#dialogueBox {
+    background: #3a2f24;
+    border: 4px solid #c8a66a;
+    padding: 20px;
+    min-height: 120px;
+    border-radius: 10px;
+    color: #c8a66a;
+    font-size: 18px;
+    line-height: 1.4em;
+}
+
+#text{
+    font-size:18px;
+    line-height:1.4em;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 20px;
+    font-size:16px;
+    background:#c8a66a;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <!-- wrapper pour le nom et le portrait -->
+    <div id="speakerWrapper">
+        <div id="speaker"></div>
+        <img id="portrait" src="" alt="Portrait" />
+    </div>
+
+    <!-- boîte de dialogue -->
+    <div id="dialogueBox">
+        <div id="text"></div>
+    </div>
+
+    <!-- boutons -->
+    <div style="margin-top:15px;">
+        <button id="prev" onclick="previous()">◀ Précédent</button>
+        <button id="next" onclick="next()">Suivant ▶</button>
+    </div>
+
+</div>
+
+<script>
+
+const dialogue = [
+
+{speaker:"Assistant", text:"Professeur… Notre ami semble avoir laissé derrière lui les stades et les exploits éclatants.", portrait:"images/Assistant.png"},
+
+{speaker:"Professeur", text:"Vraiment ? Voilà qui est surprenant. Lui qui parlait autrefois de puissance et de stratégie…", portrait:"images/Professeur.png"},
+
+{speaker:"Assistant", text:"Justement. Il ne parle plus de vitesse. Ni de victoire spectaculaire.", portrait:"images/Assistant.png"},
+
+{speaker:"Assistant", text:"Il parle de fauteuils confortables. De lumières tamisées. Et d’un certain attachement… aux choses d’un autre temps.", portrait:"images/Assistant.png"},
+
+{speaker:"Professeur", text:"Ah… Un homme qui ralentit n’abandonne pas nécessairement la partie. Il change parfois simplement de terrain.", portrait:"images/Professeur.png"},
+
+{speaker:"Assistant", text:"Il écoute de vieux morceaux sur vinyle. Il affectionne les ambiances feutrées.", portrait:"images/Assistant.png"},
+
+{speaker:"Professeur", text:"Intéressant… Nous avons donc un compétiteur qui ne cherche plus à impressionner par la force… mais peut-être par la finesse.", portrait:"images/Professeur.png"},
+
+{speaker:"Assistant", text:"Vous pensez qu’il prépare quelque chose, Professeur ?", portrait:"images/Assistant.png"},
+
+{speaker:"Professeur", text:"Mon cher ami… Lorsqu’un stratège troque la lumière des projecteurs contre l’ombre chaleureuse d’une pièce tranquille… ce n’est pas un retrait.", portrait:"images/Professeur.png"},
+
+{speaker:"Professeur", text:"C’est souvent le début… d’un nouveau défi.", portrait:"images/Professeur.png"},
+
+{speaker:"Professeur", text:"La véritable question n’est donc pas : « Que faisait-il autrefois ? »", portrait:"images/Professeur.png"},
+
+{speaker:"Professeur", text:"Mais plutôt : « Quel jeu, plus subtil, plus mature, s’apprête-t-il à maîtriser ? »", portrait:"images/Professeur.png"},
+
+{speaker:"Professeur", text:"Et maintenant, place à l'énigme !", portrait:"images/Professeur.png"},
+
+{speaker:"Énigme", text:"Les héros ne courent plus toujours sous les projecteurs. Certains préfèrent les lumières tamisées."},
+
+{speaker:"Énigme", text:"Le temps a passé. Le cuir a vieilli. Les baskets ont laissé place à des chaussures plus sages."},
+
+{speaker:"Énigme", text:"Il ne cherche plus le vacarme des stades. Mais le murmure feutré d’un vieux vinyle qui crépite."},
+
+{speaker:"Énigme", text:"Stratégie toujours. Mais plus lente. Plus précise. Plus maîtrisée."},
+
+{speaker:"Énigme", text:"Il aime ce qui a du caractère. Ce qui se bonifie avec les années. Ce qui ne se consomme pas à la hâte."},
+
+{speaker:"Énigme", text:"Son terrain n’est plus une pelouse. C’est une table en bois marquée par le temps."},
+
+{speaker:"Énigme", text:"Son maillot ? Un pull confortable."},
+
+{speaker:"Énigme", text:"Son vestiaire ? Une pièce aux lumières chaudes, où l’on parle peu mais où l’on savoure."},
+
+{speaker:"Énigme", text:"Il ne s’agit plus de marquer en force. Mais de reconnaître les nuances. D’anticiper les arômes. D’écouter ce que révèle chaque note."},
+
+{speaker:"Énigme", text:"Car dans ce nouveau jeu, on observe la robe avant l’attaque. On respire avant d’agir. On laisse le temps faire son œuvre."},
+
+{speaker:"Énigme", text:"Ici, la victoire ne se crie pas. Elle se déguste."},
+
+{speaker:"Énigme", text:"Alors, détective Bastien …"},
+
+{speaker:"Énigme", text:"Si le protagoniste aime les ambiances feutrées, les choses authentiques, la musique d’un autre temps, les plaisirs simples mais raffinés,"},
+
+{speaker:"Énigme", text:"Dans quel match discret devra-t-il prouver aujourd’hui la finesse de son palais plutôt que la puissance de son bras ?"},
+
+{speaker:"Énigme", text:"Quel terrain mousseux l’attend désormais ?"},
+
+{speaker:"Le Mioki", text:"À toi de répondre maintenant, détective Bastien le tout petit."},
+
+];
+
+let index = 0;
+
+function show() {
+    const current = dialogue[index];
+    const portrait = document.getElementById("portrait");
+    const speaker = document.getElementById("speaker");
+
+    // mettre à jour le nom et le texte
+    speaker.innerText = current.speaker;
+    document.getElementById("text").innerText = current.text;
+
+    const espace = 0; // pas besoin d'espace supplémentaire, flex gère
+
+    if (current.portrait) {
+        portrait.src = current.portrait;
+        portrait.style.display = "block";
+
+        if(current.speaker === "Professeur"){
+            portrait.style.height = "250px";
+            portrait.style.maxWidth = "250px";
+        } else if(current.speaker === "Assistant") {
+            portrait.style.height = "200px";
+            portrait.style.maxWidth = "200px";
+        } else {
+            portrait.style.height = "120px";
+            portrait.style.maxWidth = "100px";
+        }
+
+    } else {
+        portrait.style.display = "none";
+        portrait.style.height = "0px";
+        portrait.src = "";
+    }
+    updateButtons();
+}
+
+function previous(){
+
+if(index > 0){
+    index--;
+    show();
+}
+
+}
+
+function updateButtons(){
+    document.getElementById("prev").disabled = (index === 0);
+    document.getElementById("next").disabled = (index === dialogue.length - 1);
+}
+
+function next(){
+    if(index < dialogue.length - 1){
+        index++;
+        show(); // affiche le dialogue suivant et met à jour les boutons
+    }
+}
+
+show();
+
+</script>
+
+</body>
+</html>
