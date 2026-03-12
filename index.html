@@ -22,8 +22,10 @@ justify-content:center;
 align-items:center;
 }
 
-#game{
-    width:600px;
+#game {
+    width: 90%;           /* prend 90% de la largeur de l'écran */
+    max-width: 600px;     /* ne dépasse pas 600px sur desktop */
+    margin: 0 auto;        /* centrer horizontalement */
 }
 
 /* wrapper pour speaker + portrait sur la même ligne */
@@ -52,8 +54,10 @@ align-items:center;
 /* portrait */
 #portrait {
     display: block;
-    height: 0;           /* sera défini par JS */
-    max-width: 120px;
+    margin: 0 auto;       /* centré horizontalement */
+    height: auto;          /* s'adapte selon la largeur */
+    max-height: 30vh;      /* pas plus de 30% de la hauteur de l'écran */
+    max-width: 40%;        /* ou 40% de la largeur du conteneur */
     object-fit: contain;
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -67,7 +71,7 @@ align-items:center;
     min-height: 120px;
     border-radius: 10px;
     color: #c8a66a;
-    font-size: 18px;
+    font-size: 4vw;
     line-height: 1.4em;
 }
 
